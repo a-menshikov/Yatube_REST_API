@@ -8,7 +8,10 @@ Django
 Djangorestframework
 Djangorestframework-simplejwt
 ```
-
+### Схема апи:
+```
+schema.yaml в корне проекта
+```
 
 
 
