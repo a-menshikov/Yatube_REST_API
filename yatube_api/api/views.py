@@ -1,16 +1,17 @@
 from django.shortcuts import get_object_or_404
-from posts.models import Group, Post, User
-from rest_framework import permissions, viewsets
+from rest_framework import filters, mixins, permissions, viewsets
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework import filters
-from rest_framework import mixins
+
+from posts.models import Group, Post, User
+
 from .permissions import IsAuthorOrReadOnly
-from .serializers import (CommentSerializer, GroupSerializer,
-                          PostSerializer, FollowSerializer)
+from .serializers import (CommentSerializer, FollowSerializer, GroupSerializer,
+                          PostSerializer)
 
 
 class ListCreatetViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,
                          viewsets.GenericViewSet):
+    """Mixin класс включающий List и Create."""
     pass
 
 
@@ -61,8 +62,10 @@ class FollowViewSet(ListCreatetViewSet):
     search_fields = ('following__username', 'user__username')
 
     def perform_create(self, serializer):
+        """Создание новоq подписки."""
         serializer.save(user=self.request.user)
 
     def get_queryset(self):
+        """Получает список подписок для конкретного пользователя."""
         user = get_object_or_404(User, pk=self.request.user.id)
         return user.follower.all()
